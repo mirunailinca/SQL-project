@@ -1,0 +1,387 @@
+--crearea tabelelor
+CREATE TABLE cafenele
+(CUI NUMBER(10) CONSTRAINT PKey_cafenele PRIMARY KEY,
+denumire VARCHAR2(20) NOT NULL,
+adresa VARCHAR2(50), 
+telefon NUMBER(10) NOT NULL);
+
+CREATE TABLE angajati
+(id_angajat NUMBER(4) CONSTRAINT PKey_angajati PRIMARY KEY,
+nume VARCHAR2(10) NOT NULL,
+prenume VARCHAR2(10) NOT NULL,
+data_angajarii DATE,
+salariul NUMBER(5) NOT NULL,
+telefon NUMBER(10));
+
+CREATE TABLE clienti
+(id_client NUMBER(4) CONSTRAINT PKey_clienti PRIMARY KEY,
+nume VARCHAR2(10) NOT NULL,
+prenume VARCHAR2(10) NOT NULL);
+
+CREATE TABLE comenzi
+(id_comanda NUMBER(4) CONSTRAINT PKey_comenzi PRIMARY KEY,
+id_client NUMBER(4),
+CONSTRAINT FKey_comenzi FOREIGN KEY (id_client) REFERENCES clienti(id_client));
+
+CREATE TABLE produse
+(id_produs NUMBER(4) CONSTRAINT PKey_produse PRIMARY KEY,
+denumire VARCHAR2(20) NOT NULL,
+pret NUMBER(4),
+stoc NUMBER(4));
+
+CREATE TABLE detalii_comenzi
+(id_comanda NUMBER(4),
+id_produs NUMBER(4),
+cantitate NUMBER(2),
+CONSTRAINT FKey_detalii_comenzi1 FOREIGN KEY (id_comanda) REFERENCES comenzi(id_comanda),
+CONSTRAINT FKey_detalii_comenzi2 FOREIGN KEY (id_produs) REFERENCES produse(id_produs));
+
+DROP TABLE detalii_comenzi;
+
+--adaugare coloane varsta email si inaltime in tabela angajati
+ALTER TABLE angajati 
+ADD (varsta NUMBER(2),
+email VARCHAR2(10),
+inaltime NUMBER(3));
+
+ALTER TABLE clienti
+ADD (puncte NUMBER(4));
+
+--inactivare coloana inaltime
+ALTER TABLE angajati
+SET UNUSED COLUMN inaltime;
+
+--stergere coloane inactive
+ALTER TABLE angajati
+DROP UNUSED COLUMNS;
+
+--stergere coloana inaltime din tabela angajati
+ALTER TABLE angajati
+DROP COLUMN inaltime;
+
+--redenumire tabela angajati in personal, apoi invers
+ALTER TABLE angajati RENAME TO personal;
+
+RENAME personal TO angajati;
+
+--modificare tip de data coloana denumire in tabela produse
+ALTER TABLE produse
+MODIFY (denumire VARCHAR(30));
+
+ALTER TABLE angajati
+MODIFY (email VARCHAR2(30));
+	
+--adaugare restrictie pe coloana varsta in tabela angajati    
+ALTER TABLE angajati
+ADD CONSTRAINT check_varsta  CHECK (varsta>18 and varsta<60);
+	
+--adaugare restrictie pe coloana stoc in tabela produse    
+ALTER TABLE produse
+ADD CONSTRAINT check_stoc  CHECK (stoc>10);
+
+--dezactivare restrictie 
+ALTER TABLE produse
+DISABLE CONSTRAINT check_stoc;
+
+--adaugarea inregistrarilor
+INSERT INTO cafenele (CUI,denumire,adresa,telefon,mail) VALUES (6723,'Imira Cafe','Strada Craitelor Numarul 3',0728351193, 'imiracafe@gmail.com');
+INSERT INTO cafenele (CUI,denumire,adresa,telefon,mail) VALUES (1234,'Tea Hug','Strada Scolii Numarul 7',0738449947,'teahug@gmail.com');
+INSERT INTO cafenele (CUI,denumire,telefon) VALUES (1235, 'TakeYourTime', 0737373737);
+INSERT INTO cafenele (CUI,denumire,adresa,telefon,mail) VALUES (1237,'Olymp','Strada Ciasa Numarul 7',07463933383,'olymp99@gmail.com');
+INSERT INTO cafenele (CUI,denumire,adresa,telefon) VALUES (1236, 'Milu Cafe','Strada Sforii Numarul 19',0739293383);
+INSERT INTO cafenele (CUI,denumire,adresa,telefon,mail) VALUES (27652, 'Pheonyx','Bulevardul Eroilor Numarul 203',07272727883,'pheonyxcaf@gmail.com');
+INSERT INTO cafenele (CUI,denumire,telefon,mail) VALUES (28666,'Cocor Cafe',0733939939,'cocor@gmail.com');
+INSERT INTO cafenele (CUI,denumire,telefon,mail) VALUES (12345, 'AllGood', 0736484848, 'allgoodok@gmail.com');
+INSERT INTO cafenele (CUI,denumire,telefon,mail) VALUES (1222,'Mihon Coffee',0737399229, 'cafemihon@gamil.com');
+INSERT INTO cafenele (CUI,denumire,adresa,telefon,mail) VALUES (1223, 'Ratonni','Strada Frumoasa Numaul 17',07383838383,'ratonnic@gmail.com');
+INSERT INTO cafenele (CUI,denumire,telefon,mail) VALUES (13322,'AlexisToGo',0757373732,'togocoffee@gmail.com');
+
+SELECT * FROM cafenele;
+
+INSERT INTO angajati (id_angajat, nume,prenume,data_angajarii,salariul,telefon,varsta,email) VALUES (1,'Maria','Ion',TO_DATE('14.04.2020','DD.MM.YYYY'),2700,0728327738,22,'maria.ion99@gmail.com');
+INSERT INTO angajati (id_angajat, nume,prenume,data_angajarii,salariul,telefon,varsta,email) VALUES (2,'Moraru','Andrei',TO_DATE('03.11.2021','DD.MM.YYYY'),3000,0427381194,31,'mandrei@mail.ro');
+INSERT INTO angajati (id_angajat, nume,prenume,data_angajarii,salariul,telefon,varsta) VALUES (3,'Popescu','Ana',TO_DATE('23.08.2020','DD.MM.YYYY'),2950,0723649274,24);
+INSERT INTO angajati (id_angajat, nume,prenume,data_angajarii,salariul,telefon,varsta,email) VALUES (4,'Enache','Radu',TO_DATE('21.10.2018','DD.MM.YYYY'),3200,0738264739,35,'raduenache1@mail.com');
+INSERT INTO angajati (id_angajat, nume,prenume,data_angajarii,salariul,telefon,varsta) VALUES (5,'Bacalu','Antonia',TO_DATE('28.02.2019','DD.MM.YYYY'),3000,0736287732,21);
+INSERT INTO angajati (id_angajat, nume,prenume,data_angajarii,salariul,telefon,varsta) VALUES (6,'Simion','Ionut',TO_DATE('16.11.2018','DD.MM.YYYY'),3200,0726732272,23);
+INSERT INTO angajati (id_angajat, nume,prenume,data_angajarii,salariul,telefon,varsta,email) VALUES (7,'Danila','Cristiana',TO_DATE('01.11.2019','DD.MM.YYYY'),3450,0837263373,24,'cristianad2@mail.com');
+INSERT INTO angajati (id_angajat, nume,prenume,data_angajarii,salariul,telefon,varsta,email) VALUES (8,'Tudor','Irina',TO_DATE('11.09.2020','DD.MM.YYYY'),2700,0782837746,22,'tudoririna32@gmail.com');
+INSERT INTO angajati (id_angajat, nume,prenume,data_angajarii,salariul,telefon,varsta,email) VALUES (9,'Vasile','Marin',TO_DATE('21.12.2021','DD.MM.YYYY'),2670,0738462283,24,'marinvas@gamil.ro');
+INSERT INTO angajati (id_angajat, nume,prenume,data_angajarii,salariul,telefon,varsta) VALUES (10,'Rosu','Ioana',TO_DATE('03.08.2022','DD.MM.YYYY'),3120,0736293474,27);
+
+SELECT * FROM angajati;
+
+INSERT INTO produse (id_produs,denumire,pret,stoc) VALUES (1,'Latte',17,100);
+INSERT INTO produse (id_produs,denumire,pret,stoc) VALUES (2,'Cappuccino',15,150);
+INSERT INTO produse (id_produs,denumire,pret,stoc) VALUES (3,'Americano',9,200);
+INSERT INTO produse (id_produs,denumire,pret,stoc) VALUES (4,'Flat White',17,100);
+INSERT INTO produse (id_produs,denumire,pret) VALUES (5,'Espresso',10);
+INSERT INTO produse (id_produs,denumire,pret,stoc) VALUES (6,'Apa',9,300);
+INSERT INTO produse (id_produs,denumire,pret,stoc) VALUES (7,'Briosa',8,90);
+INSERT INTO produse (id_produs,denumire,pret,stoc) VALUES (8,'Sandvis',20,50);
+INSERT INTO produse (id_produs,denumire,pret) VALUES (9,'Gogoasa',10);
+INSERT INTO produse (id_produs,denumire) VALUES (10,'Biscuiti');
+
+SELECT * FROM produse;
+
+
+
+INSERT ALL
+    INTO clienti (id_client, nume, prenume) VALUES (1, 'Popescu', 'Ion')
+    INTO clienti (id_client, nume, prenume) VALUES (2, 'Ionescu', 'Maria')
+    INTO clienti (id_client, nume, prenume) VALUES (3, 'Radu', 'George')
+    INTO clienti (id_client, nume, prenume) VALUES (4, 'Popa', 'Ana')
+    INTO clienti (id_client, nume, prenume) VALUES (5, 'Dumitru', 'Andrei')
+    INTO clienti (id_client, nume, prenume) VALUES (6, 'Stanciu', 'Elena')
+    INTO clienti (id_client, nume, prenume) VALUES (7, 'Neagu', 'Mihai')
+    INTO clienti (id_client, nume, prenume) VALUES (8, 'Gheorghe', 'Cristina')
+    INTO clienti (id_client, nume, prenume) VALUES (9, 'Marinescu', 'Alex')
+    INTO clienti (id_client, nume, prenume) VALUES (10, 'Cojocaru', 'Ioana')
+SELECT * FROM dual;
+
+INSERT ALL
+    INTO comenzi (id_comanda, id_client) VALUES (1, 1)
+    INTO comenzi (id_comanda, id_client) VALUES (2, 5)
+    INTO comenzi (id_comanda, id_client) VALUES (3, 4)
+    INTO comenzi (id_comanda, id_client) VALUES (4, 5)
+    INTO comenzi (id_comanda, id_client) VALUES (5, 2)
+    INTO comenzi (id_comanda, id_client) VALUES (6, 3)
+    INTO comenzi (id_comanda, id_client) VALUES (7, 6)
+    INTO comenzi (id_comanda, id_client) VALUES (8, 7)
+    INTO comenzi (id_comanda, id_client) VALUES (9, 2)
+    INTO comenzi (id_comanda, id_client) VALUES (10, 10)
+    INTO comenzi (id_comanda, id_client) VALUES (11, 9)
+  SELECT * FROM dual;
+
+SELECT * FROM comenzi;
+
+INSERT ALL
+    INTO detalii_comenzi(id_comanda, id_produs, cantitate) VALUES (1,3,2)
+    INTO detalii_comenzi(id_comanda, id_produs, cantitate) VALUES (2,9,17)
+    INTO detalii_comenzi(id_comanda, id_produs) VALUES (3,3)
+    INTO detalii_comenzi(id_comanda, id_produs) VALUES (4,1)
+    INTO detalii_comenzi(id_comanda, id_produs, cantitate) VALUES (5,9,2)
+    INTO detalii_comenzi(id_comanda, id_produs, cantitate) VALUES (6,2,2)
+    INTO detalii_comenzi(id_comanda, id_produs, cantitate) VALUES (7,3,4)
+    INTO detalii_comenzi(id_comanda, id_produs) VALUES (8,5)
+    INTO detalii_comenzi(id_comanda, id_produs, cantitate) VALUES (9,4,1)
+    INTO detalii_comenzi(id_comanda, id_produs, cantitate) VALUES (10,10,4)
+    INTO detalii_comenzi(id_comanda, id_produs, cantitate) VALUES (11,8,20)
+  SELECT * FROM dual;
+
+
+
+--ACTUALIZARE INREGISTRARI
+--modificare date
+UPDATE angajati 
+SET varsta=varsta+1;
+
+--sa se actualizeze punctele clientilor ce au luat un produs cu cantitate > 10
+UPDATE clienti
+SET puncte = 0
+WHERE puncte IS NULL;
+
+UPDATE clienti
+SET puncte = puncte + 1
+WHERE id_client IN 
+( SELECT c.id_client
+  FROM comenzi c
+  JOIN detalii_comenzi dc ON c.id_comanda = dc.id_comanda
+  WHERE dc.cantitate > 10);
+
+--stergere date
+DELETE FROM produse
+WHERE stoc IN (50,90);
+
+ROLLBACK;
+
+--1. sa se selecteze toti angajatii care s au angajat in 2020
+SELECT * FROM angajati
+WHERE data_angajarii> TO_DATE('01.01.2020','DD.MM.YYYY') 
+AND data_angajarii< TO_DATE('30.12.2020','DD.MM.YYYY');
+
+--2. sa se realizeze jonctiunea intre coloanele nume prenume din tabela clienti si coloana cantitate din tabela detalii_comenzi pentru clientii ce au plasat o comanda, excluzand cantitatile nule
+SELECT c.nume, c.prenume, dc.cantitate
+FROM clienti c
+JOIN comenzi co ON c.id_client = co.id_client
+JOIN detalii_comenzi dc ON co.id_comanda = dc.id_comanda
+WHERE dc.cantitate IS NOT NULL;
+
+--3.sa se selecteze produsele care au acelasi pret ca si produsul 'Latte'
+SELECT *
+FROM produse
+WHERE pret = (SELECT pret FROM produse WHERE upper(denumire) = 'LATTE');
+
+--4.sa se selecteze toate produsele care au a 2a litera a sau r
+SELECT * FROM produse
+WHERE SUBSTR(denumire,2,1) in ('a','r');
+
+--5.sa se selecteze cafenelele care contin sirul "373" in numarul de telefon 
+SELECT denumire, telefon FROM cafenele
+WHERE telefon LIKE '%373%';
+
+--6.sa se afiseze un mesaj in functie de punctajul clientilor
+SELECT nume, prenume, puncte,
+       CASE 
+           WHEN puncte = 0 THEN 'Fără puncte'
+           WHEN puncte < 10 THEN 'Puține puncte'
+           ELSE 'Multe puncte'
+       END AS status_puncte
+FROM clienti;
+
+--7.sa se afiseze media punctelor clientilor
+SELECT AVG(puncte) AS media_punctelor
+FROM clienti;
+
+--8.sa se calculeze suma totala necesara pentru salarii pe o luna si sa se afiseze in ordine descresc a salariilor
+SELECT nume, prenume, salariul, SUM(salariul) OVER () AS total_salarii
+FROM angajati
+ORDER BY salariul DESC;
+
+--9.sa se realizeze o jonctiune intre numele clientilor, id ul comenzii date si detalii despre comanda
+SELECT c.nume, c.prenume, dc.id_comanda, p.denumire, dc.cantitate
+FROM clienti c
+JOIN comenzi co ON c.id_client = co.id_client
+JOIN detalii_comenzi dc ON co.id_comanda = dc.id_comanda
+JOIN produse p ON dc.id_produs = p.id_produs;
+
+--10.sa se calculeze discountul clientilor in functie de puncte
+--intre 1 si 3 pct 5%
+--intre 4 si 6 pct 8%
+--intre 7 si 10 pct 10%
+--peste 10 pct 15%
+SELECT nume,prenume,puncte,
+         CASE
+           WHEN puncte >=1 AND puncte <=3 THEN 0.05
+           WHEN puncte >=4 AND puncte <=6 THEN 0.08
+           WHEN puncte >=7 AND puncte <=10 THEN 0.1
+           WHEN puncte >10 THEN 0.15
+           ELSE 0
+          END discount_puncte
+FROM clienti;
+
+--11.sa se afiseze un mesaj pt fiecare client in functie de punctele acumulate
+SELECT nume, prenume, puncte,
+       DECODE(puncte, 0, 'Client nou', 
+                     1, 'Client regulat', 
+                     2, 'Client regulat', 
+                     3, 'Client regulat', 
+                     4, 'Client regulat', 
+                     5, 'Client regulat', 
+                     6, 'Client regulat', 
+                     7, 'Client regulat', 
+                        'Client fidel') AS status_client
+FROM clienti
+ORDER BY puncte ASC;
+
+
+--12.sa se calculeze bonusul in functie de vechimea angajatului
+SELECT nume, prenume, salariul,
+       DECODE(EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM data_angajarii),
+              0, salariul * 0.05,
+              1, salariul * 0.1,
+              salariul * 0.15) AS bonus
+FROM angajati;
+
+--13.sa se afiseze toate persoanele si tipul lor(client/angajat)
+SELECT nume, prenume, 'Client' AS tip_entitate FROM clienti
+UNION
+SELECT nume, prenume, 'Angajat' AS tip_entitate FROM angajati;
+
+--14.sa se afiseze lungimea numelui, lungimea prenumelui, daca acestea sunt egale sa se returneze null, daca nu sunt egale sa se returneze lungimea numelui
+SELECT nume, LENGTH(nume), prenume, LENGTH(prenume), NULLIF(LENGTH(nume), LENGTH(prenume)) rezultat
+FROM angajati;
+
+--15.diferenta dintre numele si prenumele angajatilor cu cele ale clientilor
+SELECT nume, prenume FROM angajati
+MINUS
+SELECT nume, prenume FROM clienti;
+
+--16.sa se selecteze inregistrarile care au >5 puncte si care sunt prezente si in rezultatul celei de a doua interogari care respecta conditia salariul>3000
+SELECT nume, prenume FROM clienti WHERE puncte > 5
+INTERSECT
+SELECT nume, prenume FROM angajati WHERE salariul > 3000;
+
+--17.sa se calculeze numarul de comenzi realizate de fiecare client
+SELECT nume, prenume, (SELECT COUNT(*) FROM comenzi WHERE comenzi.id_client = clienti.id_client) AS numar_comenzi
+FROM clienti;
+
+--18.sa se afiseze produsele care au pret mai mare decat pretul mediu
+SELECT id_produs, denumire, pret, (SELECT AVG(pret) FROM produse) AS pret_mediu
+FROM produse
+WHERE pret > (SELECT AVG(pret) FROM produse);
+
+--19.sa se trunchheze media preturilor cu o zecimala
+SELECT TRUNC(AVG(pret),1) AS pret_mediu
+FROM produse;
+
+--20.sa se afiseze produsele si stocul lor
+SELECT 'Produs: ' || INITCAP(denumire) || ' . Stoc disponibil: ' || stoc AS Produs_Stoc
+FROM produse;
+
+--21.sa se afiseze media salariilor rotunjita la 3 zecimale
+SELECT ROUND(AVG(salariul),3) AS media_salariilor
+FROM angajati;
+
+--22.sa sa afiseze persoanele angajate in lunile de vara
+SELECT nume, prenume FROM angajati
+WHERE EXTRACT(MONTH FROM data_angajarii) IN (6,7,8);
+
+--23.sa se afiseze angajatii, data angajarii si in format "MM/YY"
+SELECT nume, prenume, data_angajarii, TO_CHAR(data_angajarii, 'MM/YY') data_angajarii_2 FROM angajati;
+
+
+
+
+--vederi 
+--sa se realizeze o tabela vituala cu angajatii ce au salariu > 3000 lei
+CREATE OR REPLACE VIEW  v_angajati_3000
+AS SELECT * FROM angajati
+WHERE salariul>3000;
+
+--vizualizarea infromatiilor despre tabele virtuale
+SELECT VIEW_NAME, TEXT FROM USER_VIEWS;
+
+--sa se scada salariul cu 100
+UPDATE v_angajati_3000
+SET salariul=salariul-100;
+
+--stergerea tabelei virtuale 
+DROP VIEW v_angajati_3000;
+
+
+--indecsi
+--sa se creeze un index pe coloana prenume din tabela angajati
+SELECT * FROM angajati WHERE UPPER(prenume) = 'ANDREI';
+CREATE INDEX idx_upper_prenume ON angajati(UPPER(prenume));
+
+--vizualizarea indecsilor
+SELECT * FROM USER_INDEXES;
+
+--stergerea indecilor
+DROP INDEX idx_upper_prenume;
+
+--secvente
+
+--sa se creeze o secventa pentru id-ul clientilor 
+CREATE SEQUENCE seq_client
+START WITH 100 INCREMENT BY 1
+MAXVALUE 500 NOCYCLE;
+
+--sa se modifice pasul de incrementare si valoarea maxima
+ALTER SEQUENCE seq_client INCREMENT BY 5;
+ALTER SEQUENCE seq_client MAXVALUE 2500;
+
+--sa se stearga secventa anterioara
+DROP SEQUENCE seq_client;
+
+
+--sinonime
+--sa se creeze un sinonim pt tabela detalii_comenzi
+CREATE SYNONYM det_com FOR detalii_comenzi;
+
+--vizualizarea sinonimelor
+SELECT * FROM USER_SYNONYMS;
+
+--stergerea sinonimelor
+DROP SYNONYM det_com;
